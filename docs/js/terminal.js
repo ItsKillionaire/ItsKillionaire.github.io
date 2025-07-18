@@ -5,31 +5,36 @@ const terminalBody = document.getElementById("terminalBody");
 
 const commands = {
     whoami: `
-        <p><strong>Name:</strong> Kevin Mosqueda</p>
-        <p><strong>From:</strong> Guadalajara, México</p>
-        <p>A passionate developer crafting clean code and elegant solutions, constantly exploring the frontiers of technology.</p>
+        <p><strong>User:</strong> guest</p>
+        <p><strong>Host:</strong> killionaire-nexus</p>
+        <p><strong>Shell:</strong> bash 5.1.16</p>
     `,
     skills: `
-        <ul>
-            <li>Arch Linux</li>
-            <li>Web Design (HTML, CSS)</li>
-            <li>JavaScript (Node.js, React)</li>
-            <li>Python (Automation, Scripting)</li>
-            <li>Bash/Shell Scripting</li>
-            <li>Cybersecurity (Beginner)</li>
-            <li>Open-source Contributions</li>
-        </ul>
+        <pre>
++------------------------------------+
+| Skills Matrix                    |
++------------------------------------+
+| Web Dev      | JS, React, Node.js  |
+| Sys Admin    | Arch Linux, Bash    |
+| Scripting    | Python, Shell       |
+| Cloud        | Docker, AWS (Basic) |
+| Cybersecurity| Pentesting (Beginner) |
++------------------------------------+
+        </pre>
     `,
     help: `
+        <p>K-Nexus Shell, version 1.0.0</p>
         <p>Available commands:</p>
         <ul>
-            <li><strong>whoami</strong> - Display my information</li>
-            <li><strong>skills</strong> - List my skills</li>
-            <li><strong>clear</strong> - Clear the terminal</li>
+            <li><strong>whoami</strong> - Display system information</li>
+            <li><strong>skills</strong> - Show skill matrix</li>
+            <li><strong>clear</strong> - Clear the terminal screen</li>
             <li><strong>help</strong> - Show this help message</li>
+            <li><strong>exit</strong> - Close the terminal</li>
         </ul>
     `,
-    clear: ""
+    clear: "",
+    exit: ""
 };
 
 function printToTerminal(content) {
@@ -47,12 +52,14 @@ terminalInput.addEventListener("keydown", (e) => {
 
         const promptLine = document.createElement("div");
         promptLine.classList.add("prompt-line");
-        promptLine.innerHTML = `<span class="prompt-user">guest@k-nexus:</span><span class="prompt-symbol">$&nbsp;</span>${command}`;
+        promptLine.innerHTML = `<span class="prompt-user">[guest@k-nexus ~]</span><span class="prompt-symbol">$ </span>${command}`;
         output.appendChild(promptLine);
 
         if (command in commands) {
             if (command === "clear") {
                 terminalOutput.innerHTML = "";
+            } else if (command === "exit") {
+                goHome(); // Assumes goHome() is available from ui.js
             } else {
                 const commandOutput = document.createElement("div");
                 commandOutput.innerHTML = commands[command];
@@ -70,4 +77,4 @@ terminalInput.addEventListener("keydown", (e) => {
     }
 });
 
-printToTerminal("<p>Welcome to the Killionaire Nexus terminal.</p><p>Type 'help' to see available commands.</p>");
+printToTerminal("<p>Last login: Fri Jul 18 14:20:00 2025 on pts/0</p><p>Welcome to the Killionaire Nexus. Type 'help' for a list of commands.</p>");

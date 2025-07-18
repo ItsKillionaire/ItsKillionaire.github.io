@@ -448,86 +448,80 @@ opacity: 0.1; /* Subtle */
     box-shadow: 0 0 20px var(--color-border-glow);
 }
 
-/* Terminal Window Styling */
-.terminal-window {
-    background-color: #0c0c1f; /* Darker than body bg */
+/* --- Terminal Section Styles --- */
+#terminal {
+    background-color: rgba(20, 22, 24, 0.85); /* Dark, semi-transparent background */
+    backdrop-filter: blur(10px);
     border: 1px solid var(--color-neon-blue);
-    border-radius: 10px;
-    box-shadow: 0 0 25px var(--color-neon-blue);
-    height: 500px; /* Fixed height */
-    display: flex;
-    flex-direction: column;
-    font-family: 'Fira Code', monospace;
-}
-
-.terminal-header {
-    background-color: #1a1a30;
-    padding: 8px 12px;
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--color-neon-blue);
-}
-
-.terminal-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.terminal-button {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-
-.terminal-button.red { background-color: #ff5f56; }
-.terminal-button.yellow { background-color: #ffbd2e; }
-.terminal-button.green { background-color: #27c93f; }
-
-.terminal-title {
-    color: var(--color-text-secondary);
-    margin: 0 auto;
-    font-weight: bold;
-}
-
-.terminal-body {
-    flex-grow: 1;
-    padding: 15px;
-    overflow-y: auto;
-    font-size: 1.1em;
-}
-
-.terminal-prompt {
-    display: flex;
-    align-items: center;
-}
-
-.prompt-user {
-    color: var(--color-neon-green);
-}
-
-.prompt-symbol {
-    color: var(--color-neon-pink);
-}
-
-.terminal-input {
-    background: transparent;
-    border: none;
     color: var(--color-text-primary);
-    font-family: 'Fira Code', monospace;
-    font-size: 1em;
+    font-family: 'Fira Code', 'Ubuntu Mono', monospace;
+    font-size: 1rem;
+    padding: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    width: 70vw;
+    height: 70vh;
+    max-width: 1200px;
+    /* display: flex; <-- This is removed to allow the .hidden class to work */
+    flex-direction: column;
+    border-radius: 8px; /* Added for consistency */
+}
+
+#terminal.visible {
+    display: flex;
+}
+
+#terminalBody {
     flex-grow: 1;
-    outline: none;
+    overflow-y: auto;
+    padding-right: 10px; /* For scrollbar */
 }
 
 #terminalOutput .command-output {
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
 }
 
 #terminalOutput .prompt-line {
     display: flex;
     align-items: center;
+}
+
+.prompt-line {
+    display: flex;
+    align-items: center;
+}
+
+.prompt-user {
+    color: #4AF626; /* Classic green */
+    font-weight: bold;
+}
+
+.prompt-symbol {
+    color: var(--color-text-primary);
+    margin-right: 0.5rem;
+}
+
+.terminal-input {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: inherit;
+    flex-grow: 1;
+    outline: none;
+}
+
+/* Scrollbar for terminal */
+#terminalBody::-webkit-scrollbar {
+    width: 8px;
+}
+
+#terminalBody::-webkit-scrollbar-track {
+    background: var(--color-bg-light);
+}
+
+#terminalBody::-webkit-scrollbar-thumb {
+    background-color: var(--color-neon-blue);
+    border-radius: 4px;
 }
 
 /* Data Vault Styling */

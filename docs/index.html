@@ -53,29 +53,14 @@
 
     <main class="content-sections">
       <section id="terminal" class="content-section hidden">
-        <div class="terminal-window">
-          <div class="terminal-header">
-            <div class="terminal-buttons">
-              <span class="terminal-button red"></span>
-              <span class="terminal-button yellow"></span>
-              <span class="terminal-button green"></span>
+            <div id="terminalBody">
+                <div id="terminalOutput"></div>
+                <div class="prompt-line">
+                    <span class="prompt-user">[guest@k-nexus ~]</span><span class="prompt-symbol">$ </span>
+                    <input type="text" id="terminalInput" class="terminal-input" autocomplete="off">
+                </div>
             </div>
-            <div class="terminal-title">k-nexus:/home/guest</div>
-          </div>
-          <div class="terminal-body" id="terminalBody">
-            <div id="terminalOutput"></div>
-            <div class="terminal-prompt">
-              <span class="prompt-user">guest@k-nexus:</span>
-              <span class="prompt-symbol"><!-- The Terminal Section -->
-      <section id="terminal" class="content-section" hidden>
-        <h2>The Terminal // `~/`</h2>
-        <p>This is the terminal section. You can add terminal-like content here.</p>
-      </section>nbsp;</span>
-              <input type="text" id="terminalInput" class="terminal-input" autocomplete="off" autofocus />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
       <!-- The Data Vault Section -->
       <section id="vault" class="content-section hidden">
