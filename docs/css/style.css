@@ -77,6 +77,7 @@ width: 100%;
 box-sizing: border-box;
 position: relative;
 z-index: 1;
+transition: opacity 0.5s ease-in-out;
 }
 
 .site-title {
@@ -434,7 +435,9 @@ opacity: 0.1; /* Subtle */
 }
 
 .hidden {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.5s, opacity 0.5s ease-in-out;
 }
 
 .content-section {
@@ -446,6 +449,7 @@ opacity: 0.1; /* Subtle */
     max-width: 900px;
     margin-top: 40px;
     box-shadow: 0 0 20px var(--color-border-glow);
+    transition: opacity 0.5s ease-in-out;
 }
 
 /* Terminal Window Styling */
