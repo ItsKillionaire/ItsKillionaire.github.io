@@ -7,6 +7,8 @@ const navButtons = document.querySelectorAll(".nav-button");
 function showContent(targetId) {
     // Hide hero section
     heroSection.classList.add("hidden");
+    // Show main content area
+    document.querySelector(".content-sections").classList.remove("hidden");
     // Hide all content sections
     contentSections.forEach(section => {
         section.classList.add("hidden");
@@ -33,6 +35,7 @@ function goHome() {
     heroSection.classList.remove("hidden");
 
     // Hide all content sections
+    document.querySelector(".content-sections").classList.add("hidden");
     contentSections.forEach(section => {
         section.classList.add("hidden");
     });
