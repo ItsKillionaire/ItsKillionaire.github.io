@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Killionaire Nexus</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Audiowide&family=Fira+Code:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tone.js CDN for audio synthesis (still needed for SFX) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <style>
+      /* CSS Variables for Theme */
+      :root {
+        --color-bg-dark: #0a0a1a; /* Deep Space Black */
+        --color-bg-light: #1a1a30; /* Slightly lighter for depth */
+        --color-neon-purple: #bb00ff; /* Vibrant Purple */
+        --color-neon-blue: #00ffff; /* Electric Cyan */
+        --color-neon-pink: #ff00aa; /* Hot Pink */
+        --color-neon-green: #00ff00; /* Lime Green */
+        --color-neon-yellow: #ffff00; /* Radiant Yellow */
+        --color-text-primary: #e0e0ff; /* Soft White/Light Grey */
+        --color-text-secondary: #a0a0c0; /* Muted Grey */
+        --color-border-glow: rgba(0, 255, 255, 0.5); /* Cyan glow */
+        --color-panel-bg: rgba(
+          20,
+          20,
+          40,
+          0.8
+        ); /* Semi-transparent dark panel */
+        --color-panel-border: rgba(0, 255, 255, 0.3); /* Subtle panel border */
+      }
+
+      /* Basic Reset & Body Styling */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Fira Code", monospace;
+        background-color: var(--color-bg-dark);
+        color: var(--color-text-primary);
+        overflow-x: hidden; /* Prevent horizontal scroll */
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      /* Global Glow Effect */
+      .glow-text {
+        text-shadow:
+          0 0 5px var(--color-neon-blue),
+          0 0 10px var(--color-neon-blue),
+          0 0 15px var(--color-neon-blue);
+      }
+
+      /* Subtle Background Grid */
+      .background-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          linear-gradient(to right, var(--color-bg-light) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--color-bg-light) 1px, transparent 1px);
+        background-size: 50px 50px; /* Adjust grid size */
+        opacity: 0.1;
+        z-index: -1;
+        animation: grid-pulse 10s infinite alternate;
+      }
+
+      @keyframes grid-pulse {
+        0% {
+          opacity: 0.05;
+        }
+        100% {
+          opacity: 0.15;
+        }
+      }
+
+      /* Hero Section */
+      .hero-section {
+        text-align: center;
+        padding: 50px 20px;
+        max-width: 900px;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 1;
+      }
+
+      .site-title {
+        font-family: "Audiowide", cursive;
+        font-size: clamp(2.5em, 8vw, 6em); /* Responsive font size */
+        color: var(--color-neon-purple);
+        text-shadow:
+          0 0 10px var(--color-neon-purple),
+          0 0 20px var(--color-neon-purple),
+          0 0 30px var(--color-neon-pink);
+        margin-bottom: 10px;
+        animation: text-flicker 2s infinite alternate;
+      }
+
+      @keyframes text-flicker {
+        0%,
+        19%,
+        21%,
+        23%,
+        25%,
+        54%,
+        56%,
+        100% {
+          text-shadow:
+            0 0 10px var(--color-neon-purple),
+            0 0 20px var(--color-neon-purple),
+            0 0 30px var(--color-neon-pink);
+          opacity: 1;
+        }
+        20%,
+        24%,
+        55% {
+          text-shadow: none;
+          opacity: 0.8;
+        }
+      }
+
+      .tagline {
+        font-size: clamp(1em, 2.5vw, 1.8em);
+        color: var(--color-neon-blue);
+        margin-bottom: 40px;
+        text-shadow: 0 0 5px var(--color-neon-blue);
+        animation: pulse-glow 3s infinite alternate;
+      }
+
+      @keyframes pulse-glow {
+        0% {
+          text-shadow: 0 0 5px var(--color-neon-blue);
+        }
+        100% {
+          text-shadow:
+            0 0 15px var(--color-neon-blue),
+            0 0 20px var(--color-neon-pink);
+        }
+      }
+
+      /* Navigation Buttons */
+      .nav-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+      }
+
+      .nav-button {
+        background: linear-gradient(
+          45deg,
+          var(--color-neon-blue),
+          var(--color-neon-purple)
+        );
+        color: var(--color-text-primary);
+        padding: 15px 30px;
+        border: none;
+        border-radius: 10px;
+        font-family: "Audiowide", cursive;
+        font-size: clamp(1em, 2.5vw, 1.2em);
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 15px var(--color-neon-blue);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Enhanced Button Hover Effect (Digital Burst/Scanline Wipe) */
+      .nav-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%; /* Start from left outside */
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2) 20%,
+          rgba(255, 255, 255, 0.4) 50%,
+          rgba(255, 255, 255, 0.2) 80%,
+          transparent
+        );
+        transition: left 0.5s ease-in-out; /* Animate left property */
+        z-index: 0;
+        transform: skewX(-20deg); /* Skew for a scanline effect */
+      }
+
+      .nav-button:hover::before {
+        left: 100%; /* Move across to the right */
+      }
+
+      .nav-button:hover {
+        box-shadow:
+          0 0 25px var(--color-neon-pink),
+          0 0 40px var(--color-neon-purple);
+        transform: translateY(-5px);
+        color: white;
+      }
+
+      .nav-button span {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Button Click Effect (Pop-up) */
+      .nav-button.clicked {
+        animation: button-pop 0.2s ease-out forwards;
+      }
+
+      @keyframes button-pop {
+        0% {
+          transform: scale(1) translateY(-5px);
+          box-shadow:
+            0 0 25px var(--color-neon-pink),
+            0 0 40px var(--color-neon-purple);
+        }
+        50% {
+          transform: scale(1.05) translateY(-7px);
+          box-shadow:
+            0 0 35px var(--color-neon-yellow),
+            0 0 50px var(--color-neon-green);
+        }
+        100% {
+          transform: scale(1) translateY(-5px);
+          box-shadow:
+            0 0 25px var(--color-neon-pink),
+            0 0 40px var(--color-neon-purple);
+        }
+      }
+
+      /* Footer */
+      .footer {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 0.8em;
+        color: var(--color-text-secondary);
+        opacity: 0.7;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .hero-section {
+          padding: 30px 15px;
+        }
+        .nav-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+        .nav-button {
+          width: 80%;
+        }
+      }
+
+      /* Cursor Glow */
+      .cursor-glow {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        background-color: var(--glow-color);
+        border-radius: 50%;
+        opacity: 0.5;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        animation: fade-out-scale 0.5s forwards;
+        z-index: 9999;
+        filter: blur(5px);
+      }
+
+      @keyframes fade-out-scale {
+        0% {
+          opacity: 0.5;
+          transform: translate(-50%, -50%) scale(0.5);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(1.5);
+        }
+      }
+
+      /* Audio Control */
+      .audio-control {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: var(--color-panel-bg);
+        padding: 10px 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px var(--color-panel-border);
+      }
+
+      .audio-control label {
+        color: var(--color-text-secondary);
+        font-size: 0.9em;
+      }
+
+      .audio-control input[type="range"] {
+        -webkit-appearance: none;
+        width: 80px; /* Made smaller */
+        height: 8px;
+        background: var(--color-bg-light);
+        outline: none;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        border-radius: 4px;
+      }
+
+      .audio-control input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--color-neon-blue);
+        cursor: grab; /* Changed to grab cursor */
+        box-shadow: 0 0 5px var(--color-neon-blue);
+      }
+
+      .audio-control input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--color-neon-blue);
+        cursor: grab; /* Changed to grab cursor */
+        box-shadow: 0 0 5px var(--color-neon-blue);
+      }
+
+      .audio-control button {
+        background-color: transparent;
+        border: 1px solid var(--color-neon-blue);
+        color: var(--color-neon-blue);
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        font-family: "Fira Code", monospace;
+        font-size: 0.8em;
+      }
+
+      .audio-control button:hover {
+        background-color: var(--color-neon-blue);
+        color: var(--color-bg-dark);
+        box-shadow: 0 0 10px var(--color-neon-blue);
+      }
+
+      /* Initial Interaction Overlay */
+      .initial-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 100000;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+      }
+
+      .initial-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .initial-overlay-content {
+        text-align: center;
+        background-color: var(--color-panel-bg);
+        padding: 30px 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 30px var(--color-neon-blue);
+        border: 1px solid var(--color-neon-blue);
+      }
+
+      .initial-overlay-content h2 {
+        font-family: "Audiowide", cursive;
+        color: var(--color-neon-green);
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px var(--color-neon-green);
+      }
+
+      .initial-overlay-content p {
+        color: var(--color-text-primary);
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+
+      .initial-overlay-content button {
+        background: linear-gradient(
+          90deg,
+          var(--color-neon-green),
+          var(--color-neon-yellow)
+        );
+        color: var(--color-bg-dark);
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-family: "Audiowide", cursive;
+        font-size: 1.1em;
+        cursor: pointer;
+        box-shadow: 0 0 15px var(--color-neon-green);
+        transition: all 0.3s ease-in-out;
+      }
+
+      .initial-overlay-content button:hover {
+        box-shadow:
+          0 0 20px var(--color-neon-yellow),
+          0 0 30px var(--color-neon-green);
+        transform: scale(1.05);
+      }
+
+      /* New: Scanline/CRT Overlay */
+      .scanline-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 100000; /* Above everything else */
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          rgba(0, 0, 0, 0.1) 1px,
+          transparent 2px
+        );
+        opacity: 0.1; /* Subtle */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-grid"></div>
+    <div class="scanline-overlay"></div>
+    <!-- New scanline overlay -->
+
+    <!-- Initial Interaction Overlay -->
+    <div class="initial-overlay" id="initialOverlay">
+      <div class="initial-overlay-content">
+        <h2>System Initialization Required</h2>
+        <p>
+          Click to enter the Killionaire Nexus and activate audio protocols.
+        </p>
+        <button id="startButton">Begin Transmission</button>
+      </div>
+    </div>
+
+    <header class="hero-section">
+      <h1 class="site-title" id="siteTitle">Killionaire Nexus</h1>
+      <p class="tagline">
+        Connecting Worlds. Building Dreams. Exploring the Digital Frontier.
+      </p>
+
+      <nav class="nav-buttons">
+        <a href="#terminal" class="nav-button"
+          ><span>The Terminal // `~/`</span></a
+        >
+        <a href="#vault" class="nav-button"
+          ><span>The Data Vault // `//projects`</span></a
+        >
+        <a href="#gateway" class="nav-button"
+          ><span>The Gateway // `//contact`</span></a
+        >
+        <a href="#playground" class="nav-button"
+          ><span>The Playground // `//sandbox`</span></a
+        >
+      </nav>
+    </header>
+
+    <footer class="footer">
+      &copy; 2025 Killionaire. All Rights Reserved.
+      <div
+        id="systemStatus"
+        style="
+          margin-top: 10px;
+          font-size: 0.9em;
+          color: var(--color-neon-green);
+        "
+      ></div>
+      <!-- New system status -->
+    </footer>
+
+    <!-- Audio Control UI -->
+    <div class="audio-control">
+      <label for="masterVolume">Volume:</label>
+      <input
+        type="range"
+        id="masterVolume"
+        min="-60"
+        max="0"
+        value="-6"
+        step="1"
+      />
+      <!-- Default to ~50% volume (-6dB) -->
+      <button id="muteButton">Mute</button>
+    </div>
+
+    <script>
+      // --- Tone.js Audio Setup ---
+      // Declare variables globally
+      let masterVolume;
+      let chorus;
+      let reverb;
+      let bgSynth;
+      let bgLoop;
+      let sfxSynth;
+      let clickSynth;
+      let flickerSynth;
+
+      let isMuted = false;
+      let audioInitialized = false; // Flag to ensure audio setup runs only once
+
+      function initializeAudio() {
+        if (audioInitialized) {
+          console.log("Audio already initialized. Skipping re-initialization.");
+          return;
+        }
+
+        masterVolume = new Tone.Volume(-6).toDestination(); // Initial volume -6dB (~50%)
+
+        // Effects for Vaporwave Vibe
+        chorus = new Tone.Chorus(4, 2.5, 0.5).connect(masterVolume); // Wide, detuned sound
+        reverb = new Tone.Reverb({ decay: 5, predelay: 0.1, wet: 0.3 }).connect(
+          chorus,
+        ); // Ambient space
+
+        // Background Music (Ambient Pad - more vaporwave-like)
+        bgSynth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: "sawtooth" },
+          envelope: {
+            attack: 2,
+            decay: 1,
+            sustain: 0.5,
+            release: 5,
+          },
+          volume: -10, // Increased volume for pad
+        }).connect(reverb); // Connect to reverb, then chorus, then masterVolume
+
+        bgLoop = new Tone.Loop((time) => {
+          bgSynth.triggerAttackRelease(["C3", "Eb3", "G3", "Bb3"], "2n", time); // Cm7
+          bgSynth.triggerAttackRelease(
+            ["F3", "Ab3", "C4", "Eb4"],
+            "2n",
+            time + Tone.Time("1m").toSeconds() / 2,
+          ); // Fm7
+        }, "1m"); // Loop every measure
+
+        bgLoop.humanize = true; // Add some human feel
+
+        // SFX Synths
+        sfxSynth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: "triangle" },
+          envelope: {
+            attack: 0.01,
+            decay: 0.1,
+            sustain: 0.0,
+            release: 0.1,
+          },
+          volume: -10,
+        }).connect(masterVolume);
+
+        clickSynth = new Tone.MembraneSynth({
+          pitchDecay: 0.05,
+          octaves: 8,
+          envelope: {
+            attack: 0.001,
+            decay: 0.4,
+            sustain: 0.01,
+            release: 0.2,
+          },
+          volume: -15,
+        }).connect(masterVolume);
+
+        flickerSynth = new Tone.NoiseSynth({
+          noise: { type: "white" },
+          envelope: {
+            attack: 0.001,
+            decay: 0.05,
+            sustain: 0.0,
+            release: 0.05,
+          },
+          volume: -25, // Very subtle flicker sound
+        }).connect(masterVolume);
+
+        audioInitialized = true; // Set flag to true after initialization
+        console.log("Tone.js audio components initialized.");
+      }
+
+      // --- Event Listeners ---
+
+      // Initial Interaction Overlay to start AudioContext
+      document
+        .getElementById("startButton")
+        .addEventListener("click", async () => {
+          console.log(
+            "Start button clicked. Attempting to start Tone.js AudioContext...",
+          );
+
+          // Initialize audio components if not already done
+          initializeAudio();
+
+          if (Tone.context.state !== "running") {
+            // Check if context is NOT running
+            await Tone.start();
+            console.log("AudioContext state:", Tone.context.state);
+          }
+
+          // Start background music loop and transport only once
+          if (audioInitialized && !bgLoop.state === "started") {
+            // Check bgLoop state
+            bgLoop.start(0);
+            Tone.Transport.start();
+            console.log("Background music loop and Transport started.");
+          } else {
+            console.log("Audio loop already running or not initialized.");
+          }
+          document.getElementById("initialOverlay").classList.add("hidden");
+          console.log("Master volume value:", masterVolume.volume.value); // Log current volume
+        });
+
+      // Master Volume Control
+      document.getElementById("masterVolume").addEventListener("input", (e) => {
+        if (!audioInitialized) return; // Prevent interaction before initialization
+        masterVolume.volume.value = parseFloat(e.target.value);
+        console.log("Volume slider changed to:", masterVolume.volume.value);
+        if (isMuted && masterVolume.volume.value > -60) {
+          isMuted = false;
+          document.getElementById("muteButton").textContent = "Mute";
+        }
+      });
+
+      // Mute/Unmute Button
+      document.getElementById("muteButton").addEventListener("click", () => {
+        if (!audioInitialized) return; // Prevent interaction before initialization
+        if (isMuted) {
+          masterVolume.volume.value = parseFloat(
+            document.getElementById("masterVolume").value,
+          );
+          document.getElementById("muteButton").textContent = "Mute";
+          console.log("Unmuted. Volume:", masterVolume.volume.value);
+          if (Tone.Transport.state !== "started") {
+            // Resume transport if it was stopped
+            Tone.Transport.start();
+          }
+        } else {
+          masterVolume.volume.value = -Infinity; // Mute
+          document.getElementById("muteButton").textContent = "Unmute";
+          console.log("Muted.");
+          if (Tone.Transport.state === "started") {
+            Tone.Transport.stop(); // Stop transport when muted to prevent "start time" errors if trying to restart
+          }
+        }
+        isMuted = !isMuted;
+      });
+
+      // Button Hover SFX
+      document.querySelectorAll(".nav-button").forEach((button) => {
+        button.addEventListener("mouseenter", () => {
+          if (!audioInitialized) return;
+          sfxSynth.triggerAttackRelease("C5", "16n");
+        });
+        button.addEventListener("mouseleave", () => {
+          // Optional: subtle sound on mouse leave
+        });
+        // Add click effect
+        button.addEventListener("click", () => {
+          if (!audioInitialized) return;
+          button.classList.add("clicked");
+          clickSynth.triggerAttackRelease("C4", "32n"); // Play click SFX on button click
+          button.addEventListener(
+            "animationend",
+            () => {
+              button.classList.remove("clicked");
+            },
+            { once: true },
+          );
+        });
+      });
+
+      // Neon Flickering SFX (synced with CSS animation iteration)
+      const siteTitle = document.getElementById("siteTitle");
+      siteTitle.addEventListener("animationiteration", () => {
+        if (!audioInitialized) return;
+        // Play a subtle flicker sound occasionally or on every iteration
+        if (Math.random() < 0.5) {
+          // Adjust probability for desired frequency
+          flickerSynth.triggerAttackRelease("8n");
+        }
+      });
+
+      // General Click SFX (matching cursor trail)
+      document.body.addEventListener("click", (e) => {
+        if (!audioInitialized) return;
+        // Check if the click was on a nav button (or a child of one)
+        let isNavButton = false;
+        let targetElement = e.target;
+        while (targetElement != null) {
+          if (
+            targetElement.classList &&
+            targetElement.classList.contains("nav-button")
+          ) {
+            isNavButton = true;
+            break;
+          }
+          targetElement = targetElement.parentElement;
+        }
+
+        // Only play general click SFX if not on a nav button
+        if (!isNavButton) {
+          clickSynth.triggerAttackRelease("C4", "32n"); // A subtle pop sound
+        }
+      });
+
+      // Cursor Glow Effect (from previous version)
+      document.addEventListener("mousemove", function (e) {
+        const cursorGlow = document.createElement("div");
+        cursorGlow.className = "cursor-glow";
+        document.body.appendChild(cursorGlow);
+
+        cursorGlow.style.left = e.clientX + "px";
+        cursorGlow.style.top = e.clientY + "px";
+
+        cursorGlow.style.setProperty(
+          "--glow-color",
+          `var(--color-neon-${["purple", "blue", "pink", "green", "yellow"][Math.floor(Math.random() * 5)]})`,
+        );
+
+        setTimeout(() => {
+          cursorGlow.remove();
+        }, 500);
+      });
+
+      // Ensure audio context is resumed on any interaction if suspended (mobile browsers)
+      document.body.addEventListener("touchstart", async () => {
+        if (!audioInitialized && Tone.context.state !== "running") {
+          initializeAudio();
+          await Tone.start();
+          Tone.Transport.start();
+        } else if (Tone.context.state !== "running") await Tone.start();
+      });
+      document.body.addEventListener("mousedown", async () => {
+        if (!audioInitialized && Tone.context.state !== "running") {
+          initializeAudio();
+          await Tone.start();
+          Tone.Transport.start();
+        } else if (Tone.context.state !== "running") await Tone.start();
+      });
+
+      // New: System Status Update (Mock Data)
+      const systemStatusElement = document.getElementById("systemStatus");
+      let uptimeSeconds = 0;
+      let activeConnections = 0;
+      let dataPackets = 0;
+
+      function updateSystemStatus() {
+        uptimeSeconds++;
+        const hours = Math.floor(uptimeSeconds / 3600);
+        const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+        const seconds = uptimeSeconds % 60;
+
+        // Simulate dynamic data
+        activeConnections = Math.floor(Math.random() * 10) + 1; // 1 to 10 connections
+        dataPackets += Math.floor(Math.random() * 100) + 10; // 10 to 109 packets per second
+
+        systemStatusElement.innerHTML = `
+                STATUS: ONLINE | UPTIME: ${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")} |
+                CONNECTIONS: ${activeConnections.toString().padStart(2, "0")} | DATA TRANSFERRED: ${dataPackets.toLocaleString()} PKTS
+            `;
+      }
+
+      // Update status every second
+      setInterval(updateSystemStatus, 1000);
+
+      // Initial call to set status immediately
+      updateSystemStatus();
+    </script>
+  </body>
+</html>
