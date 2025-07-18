@@ -355,13 +355,64 @@ box-shadow: 0 0 10px var(--color-neon-blue);
 
 /* Initial Interaction Overlay */
 .initial-overlay {
-position: fixed;
-top: 0;
-left:.initial-overlay-content button:hover {
-box-shadow:
-    0 0 20px var(--color-neon-yellow),
-    0 0 30px var(--color-neon-green);
-transform: scale(1.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 26, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease-out;
+    opacity: 1;
+}
+
+.initial-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.initial-overlay-content {
+    text-align: center;
+    color: var(--color-text-primary);
+    animation: pulse-glow 3s infinite alternate;
+}
+
+.initial-overlay-content h2 {
+    font-family: 'Audiowide', cursive;
+    font-size: 2.5em;
+    color: var(--color-neon-blue);
+    text-shadow: 0 0 10px var(--color-neon-blue);
+    margin-bottom: 20px;
+}
+
+.initial-overlay-content p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: var(--color-text-secondary);
+}
+
+.initial-overlay-content button {
+    background: linear-gradient(45deg, var(--color-neon-green), var(--color-neon-blue));
+    color: var(--color-bg-dark);
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Audiowide', cursive;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px var(--color-neon-green);
+}
+
+.initial-overlay-content button:hover {
+    box-shadow:
+        0 0 20px var(--color-neon-yellow),
+        0 0 30px var(--color-neon-green);
+    transform: scale(1.05);
 }
 
 /* New: Scanline/CRT Overlay */

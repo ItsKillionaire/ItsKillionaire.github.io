@@ -47,3 +47,12 @@ siteTitleLink.addEventListener("click", (e) => {
     e.preventDefault();
     goHome();
 });
+
+
+navButtons.forEach(button => {
+    button.addEventListener("click", (e) => {
+        e.preventDefault();
+        const targetId = button.getAttribute("href").substring(1);
+        showContent(targetId);
+    });
+});
