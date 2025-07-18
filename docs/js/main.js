@@ -106,7 +106,6 @@ document
     }
 
     document.getElementById("initialOverlay").classList.add("hidden");
-    document.querySelector(".content-sections").classList.remove("hidden");
     // Update volume slider to reflect HTML audio volume
     // Note: Tone.gainToDb(backgroundMusic.volume) converts 0-1 range to dB for slider
     document.getElementById("masterVolume").value = Tone.gainToDb(

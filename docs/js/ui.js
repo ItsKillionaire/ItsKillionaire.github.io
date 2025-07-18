@@ -7,17 +7,22 @@ const navButtons = document.querySelectorAll(".nav-button");
 function showContent(targetId) {
     // Hide hero section
     heroSection.classList.add("hidden");
-    // Show main content area
-    document.querySelector(".content-sections").classList.remove("hidden");
+    heroSection.classList.remove("visible", "fade-in");
+
     // Hide all content sections
     contentSections.forEach(section => {
         section.classList.add("hidden");
+        section.classList.remove("visible", "fade-in");
     });
 
     // Show the target section
     const targetSection = document.getElementById(targetId);
     if (targetSection) {
         targetSection.classList.remove("hidden");
+        // Use a timeout to allow the display property to change before adding the fade-in class
+        setTimeout(() => {
+            targetSection.classList.add("visible", "fade-in");
+        }, 20);
     }
 
     // Update active button
@@ -33,11 +38,15 @@ function showContent(targetId) {
 function goHome() {
     // Show hero section
     heroSection.classList.remove("hidden");
+    setTimeout(() => {
+        heroSection.classList.add("visible", "fade-in");
+    }, 20);
+
 
     // Hide all content sections
-    document.querySelector(".content-sections").classList.add("hidden");
     contentSections.forEach(section => {
         section.classList.add("hidden");
+        section.classList.remove("visible", "fade-in");
     });
 
     // Remove active class from all buttons
@@ -59,3 +68,23 @@ navButtons.forEach(button => {
         showContent(targetId);
     });
 });
+
+// --- Close content and return home ---
+function handleCloseEvent(e) {
+    // Check if a content section is visible
+    const aSectionIsVisible = Array.from(contentSections).some(section => section.classList.contains('visible'));
+
+    if (aSectionIsVisible) {
+        // If click is outside of the content section, go home
+        if (e.type === 'click' && !e.target.closest('.content-section')) {
+            goHome();
+        }
+        // If Escape key is pressed, go home
+        if (e.type === 'keydown' && e.key === 'Escape') {
+            goHome();
+        }
+    }
+}
+
+document.addEventListener('keydown', handleCloseEvent);
+document.body.addEventListener('click', handleCloseEvent);
