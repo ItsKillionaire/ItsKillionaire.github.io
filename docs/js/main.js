@@ -6,7 +6,6 @@ let reverb;
 // bgSynth and bgLoop are removed as background music is handled by HTML Audio
 let sfxSynth;
 let clickSynth;
-let flickerSynth;
 
 let isMuted = false;
 let audioInitialized = false; // Flag to ensure Tone.js audio components are initialized only once
@@ -53,16 +52,6 @@ function initializeAudio() {
     },
     volume: -15,
     }).connect(masterVolume);
-
-    flickerSynth = new Tone.NoiseSynth({
-    noise: { type: "white" },
-    envelope: {
-        attack: 0.001,
-        decay: 0.05,
-        sustain: 0.0,
-        release: 0.05,
-    },
-    }).connect(masterVolume); // Removed explicit volume from flickerSynth as it's very subtle
 
     audioInitialized = true; // Set flag to true after initialization
     console.log("Tone.js audio components initialized.");
@@ -207,17 +196,6 @@ document.querySelectorAll(".nav-button").forEach((button) => {
         const targetId = button.getAttribute("href").substring(1);
         showContent(targetId);
     });
-});
-
-// Neon Flickering SFX (synced with CSS animation iteration)
-const siteTitle = document.getElementById("siteTitle");
-siteTitle.addEventListener("animationiteration", () => {
-    if (!audioInitialized) return;
-    // Play a subtle flicker sound occasionally or on every iteration
-    if (Math.random() < 0.5) {
-    // Adjust probability for desired frequency
-    flickerSynth.triggerAttackRelease("8n");
-    }
 });
 
 // General Click SFX (matching cursor trail)
