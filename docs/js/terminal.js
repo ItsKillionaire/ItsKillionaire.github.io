@@ -4,12 +4,12 @@ const terminalOutput = document.getElementById("terminalOutput");
 const terminalBody = document.getElementById("terminalBody");
 
 const commands = {
-    whoami: `
+  whoami: `
         <p><strong>User:</strong> guest</p>
         <p><strong>Host:</strong> killionaire-nexus</p>
         <p><strong>Shell:</strong> bash 5.1.16</p>
     `,
-    skills: `
+  skills: `
         <pre>
 +------------------------------------+
 | Skills Matrix                    |
@@ -22,8 +22,8 @@ const commands = {
 +------------------------------------+
         </pre>
     `,
-    help: `
-        <p>K-Nexus Shell, version 1.0.0</p>
+  help: `
+        <p>K-Nexus Shell, version 1.0.1</p>
         <p>Available commands:</p>
         <ul>
             <li><strong>whoami</strong> - Display system information</li>
@@ -33,48 +33,50 @@ const commands = {
             <li><strong>exit</strong> - Close the terminal</li>
         </ul>
     `,
-    clear: "",
-    exit: ""
+  clear: "",
+  exit: "",
 };
 
 function printToTerminal(content) {
-    const output = document.createElement("div");
-    output.innerHTML = content;
-    terminalOutput.appendChild(output);
-    terminalBody.scrollTop = terminalBody.scrollHeight;
+  const output = document.createElement("div");
+  output.innerHTML = content;
+  terminalOutput.appendChild(output);
+  terminalBody.scrollTop = terminalBody.scrollHeight;
 }
 
 terminalInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        const command = terminalInput.value.trim();
-        const output = document.createElement("div");
-        output.classList.add("command-output");
+  if (e.key === "Enter") {
+    const command = terminalInput.value.trim();
+    const output = document.createElement("div");
+    output.classList.add("command-output");
 
-        const promptLine = document.createElement("div");
-        promptLine.classList.add("prompt-line");
-        promptLine.innerHTML = `<span class="prompt-user">[guest@k-nexus ~]</span><span class="prompt-symbol">$ </span>${command}`;
-        output.appendChild(promptLine);
+    const promptLine = document.createElement("div");
+    promptLine.classList.add("prompt-line");
+    promptLine.innerHTML = `<span class="prompt-user">guest@k-nexus:~</span><span class="prompt-symbol">$ </span>${command}`;
+    output.appendChild(promptLine);
 
-        if (command in commands) {
-            if (command === "clear") {
-                terminalOutput.innerHTML = "";
-            } else if (command === "exit") {
-                goHome(); // Assumes goHome() is available from ui.js
-            } else {
-                const commandOutput = document.createElement("div");
-                commandOutput.innerHTML = commands[command];
-                output.appendChild(commandOutput);
-            }
-        } else {
-            const errorOutput = document.createElement("div");
-            errorOutput.innerHTML = `<p>Command not found: ${command}</p>`;
-            output.appendChild(errorOutput);
-        }
-
-        terminalOutput.appendChild(output);
-        terminalInput.value = "";
-        terminalBody.scrollTop = terminalBody.scrollHeight;
+    if (command in commands) {
+      if (command === "clear") {
+        terminalOutput.innerHTML = "";
+      } else if (command === "exit") {
+        goHome(); // Assumes goHome() is available from ui.js
+      } else {
+        const commandOutput = document.createElement("div");
+        commandOutput.innerHTML = commands[command];
+        output.appendChild(commandOutput);
+      }
+    } else {
+      const errorOutput = document.createElement("div");
+      errorOutput.innerHTML = `<p>Command not found: ${command}</p>`;
+      output.appendChild(errorOutput);
     }
+
+    terminalOutput.appendChild(output);
+    terminalInput.value = "";
+    terminalBody.scrollTop = terminalBody.scrollHeight;
+  }
 });
 
-printToTerminal("<p>Last login: Fri Jul 18 14:20:00 2025 on pts/0</p><p>Welcome to the Killionaire Nexus. Type 'help' for a list of commands.</p>");
+printToTerminal(
+  "<p>Last login: Fri Jul 18 14:20:00 2025 on pts/0</p><p>Welcome to the Killionaire Nexus. Type 'help' for a list of commands.</p>",
+);

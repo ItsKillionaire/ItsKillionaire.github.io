@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
 const highScoreElement = document.getElementById("highScore");
 
-const gridSize = 20;
+let gridSize = 20;
 let snake = [{ x: 10, y: 10 }];
 let food = {};
 let direction = "right";
@@ -13,6 +13,28 @@ let highScore = localStorage.getItem("highScore") || 0;
 let gameOver = false;
 
 highScoreElement.textContent = highScore;
+
+// --- Responsive Canvas ---
+function resizeCanvas() {
+    const container = document.querySelector('.playground-container');
+    let size = container.offsetWidth;
+    
+    // Ensure size is a multiple of gridSize for clean grid
+    size = Math.floor(size / gridSize) * gridSize;
+
+    // Clamp the size between a min and max value
+    const maxSize = 600;
+    const minSize = 300;
+    size = Math.max(minSize, Math.min(size, maxSize));
+
+    canvas.width = size;
+    // Maintain a 2:3 aspect ratio, also a multiple of gridSize
+    canvas.height = Math.floor(size * (2 / 3) / gridSize) * gridSize;
+    
+    // Recalculate grid-based positions if needed
+    resetGame(); 
+}
+
 
 function generateFood() {
     food = {
@@ -126,5 +148,41 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-generateFood();
+// --- Touch Controls ---
+const upButton = document.getElementById('snake-up');
+const downButton = document.getElementById('snake-down');
+const leftButton = document.getElementById('snake-left');
+const rightButton = document.getElementById('snake-right');
+
+upButton.addEventListener('click', () => {
+    if (direction !== 'down') direction = 'up';
+});
+downButton.addEventListener('click', () => {
+    if (direction !== 'up') direction = 'down';
+});
+leftButton.addEventListener('click', () => {
+    if (direction !== 'right') direction = 'left';
+});
+rightButton.addEventListener('click', () => {
+    if (direction !== 'left') direction = 'right';
+});
+
+window.addEventListener('resize', resizeCanvas);
+
+
+// Ensure the game starts only when the section is visible
+const playgroundSection = document.getElementById('playground');
+const snakeObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+        resizeCanvas(); // Resize canvas when it becomes visible
+        if (gameOver) { // If game was over, reset it when coming back to the section
+            resetGame();
+        }
+    }
+}, { threshold: 0.1 });
+
+snakeObserver.observe(playgroundSection);
+
+// Initial setup
+resizeCanvas();
 setInterval(update, 100);

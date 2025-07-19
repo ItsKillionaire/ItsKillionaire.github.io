@@ -630,12 +630,16 @@ opacity: 0.1; /* Subtle */
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    width: 100%; /* Make container responsive */
 }
 
 #snakeCanvas {
     background-color: #0c0c1f;
     border: 2px solid var(--color-neon-green);
     box-shadow: 0 0 15px var(--color-neon-green);
+    width: 100%; /* Make canvas responsive */
+    max-width: 600px; /* Limit max size on desktop */
+    height: auto; /* Maintain aspect ratio */
 }
 
 .game-info {
@@ -645,6 +649,47 @@ opacity: 0.1; /* Subtle */
     max-width: 600px;
     font-size: 1.2em;
     color: var(--color-neon-green);
+    padding: 0 10px; /* Add some padding on mobile */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* Snake Controls */
+.snake-controls {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.snake-controls-row {
+    display: flex;
+    gap: 10px;
+}
+
+.snake-controls button {
+    background-color: var(--color-panel-bg);
+    border: 1px solid var(--color-neon-green);
+    color: var(--color-neon-green);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 1.8em;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.snake-controls button:hover {
+    background-color: var(--color-neon-green);
+    color: var(--color-bg-dark);
+    box-shadow: 0 0 15px var(--color-neon-green);
+}
+
+/* Show controls only on smaller screens */
+@media (max-width: 768px) {
+    .snake-controls {
+        display: flex;
+    }
 }
 
 
