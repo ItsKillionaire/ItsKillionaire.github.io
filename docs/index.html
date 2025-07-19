@@ -29,107 +29,110 @@
       </div>
     </div>
 
-    <header class="hero-section">
-      <h1 class="site-title" id="siteTitle">Killionaire Nexus</h1>
-      <p class="tagline">
-        Connecting Worlds. Building Dreams. Exploring the Digital Frontier.
-      </p>
+    <div class="main-container">
+      <header class="hero-section">
+        <h1 class="site-title" id="siteTitle">Killionaire Nexus</h1>
+        <p class="tagline">
+          Connecting Worlds. Building Dreams. Exploring the Digital Frontier.
+        </p>
 
-      <nav class="nav-buttons">
-        <a href="#terminal" class="nav-button"
-          ><span>The Terminal // `~/`</span></a
-        >
-        <a href="#vault" class="nav-button"
-          ><span>The Data Vault // `//projects`</span></a
-        >
-        <a href="#gateway" class="nav-button"
-          ><span>The Gateway // `//contact`</span></a
-        >
-        <a href="#playground" class="nav-button"
-          ><span>The Playground // `//sandbox`</span></a
-        >
-      </nav>
+        <nav class="nav-buttons">
+          <a href="#terminal" class="nav-button"
+            ><span>The Terminal // `~/`</span></a
+          >
+          <a href="#vault" class="nav-button"
+            ><span>The Data Vault // `//projects`</span></a
+          >
+          <a href="#gateway" class="nav-button"
+            ><span>The Gateway // `//contact`</span></a
+          >
+          <a href="#playground" class="nav-button"
+            ><span>The Playground // `//sandbox`</span></a
+          >
+        </nav>
 
-      <!-- Audio Control UI -->
-      <div class="audio-control">
-        <button id="muteButton"><i class="fas fa-volume-high"></i></button>
-        <div class="volume-slider-container">
-          <div class="volume-slider-track"></div>
-          <input
-            type="range"
-            id="masterVolume"
-            min="-60"
-            max="0"
-            value="-6"
-            step="1"
-          />
+        <!-- Audio Control UI -->
+        <div class="audio-control">
+          <button id="muteButton"><i class="fas fa-volume-high"></i></button>
+          <div class="volume-slider-container">
+            <div class="volume-slider-track"></div>
+            <input
+              type="range"
+              id="masterVolume"
+              min="-60"
+              max="0"
+              value="-6"
+              step="1"
+            />
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
 
-    <main class="content-sections">
-      <section id="terminal" class="content-section hidden">
-            <div id="terminalBody">
-                <div id="terminalOutput"></div>
-                <div class="prompt-line">
-                    <span class="prompt-user">[guest@k-nexus ~]</span><span class="prompt-symbol">$ </span>
-                    <input type="text" id="terminalInput" class="terminal-input" autocomplete="off">
-                </div>
+      <main class="content-sections">
+        <section id="terminal" class="content-section hidden">
+              <div id="terminalBody">
+                  <div id="terminalOutput"></div>
+                  <div class="prompt-line">
+                      <span class="prompt-user">[guest@k-nexus ~]</span><span class="prompt-symbol">$ </span>
+                      <input type="text" id="terminalInput" class="terminal-input" autocomplete="off">
+                  </div>
+              </div>
+          </section>
+
+        <!-- The Data Vault Section -->
+        <section id="vault" class="content-section hidden">
+          <h2>The Data Vault // `//projects`</h2>
+          <div class="datavault-container">
+            <div class="github-card">
+              <div class="github-card-header">
+                <img src="https://avatars.githubusercontent.com/u/138144624?v=4" alt="Kevin Mosqueda's Avatar" class="github-avatar">
+              </div>
+              <div class="github-card-body">
+                <h3 class="github-name">Kevin Mosqueda (ItsKillionaire)</h3>
+                <p class="github-bio">A passionate developer crafting clean code and elegant solutions, constantly exploring the frontiers of technology.</p>
+                <a href="https://github.com/ItsKillionaire" target="_blank" class="github-button">View Profile on GitHub</a>
+              </div>
             </div>
+          </div>
         </section>
 
-      <!-- The Data Vault Section -->
-      <section id="vault" class="content-section hidden">
-        <h2>The Data Vault // `//projects`</h2>
-        <div class="datavault-container">
-          <div class="github-card">
-            <div class="github-card-header">
-              <img src="https://avatars.githubusercontent.com/u/138144624?v=4" alt="Kevin Mosqueda's Avatar" class="github-avatar">
-            </div>
-            <div class="github-card-body">
-              <h3 class="github-name">Kevin Mosqueda (ItsKillionaire)</h3>
-              <p class="github-bio">A passionate developer crafting clean code and elegant solutions, constantly exploring the frontiers of technology.</p>
-              <a href="https://github.com/ItsKillionaire" target="_blank" class="github-button">View Profile on GitHub</a>
-            </div>
+        <!-- The Gateway Section -->
+        <section id="gateway" class="content-section hidden">
+          <h2>The Gateway // `//contact`</h2>
+          <div class="gateway-container">
+            <a href="mailto:kevmosqueda@hotmail.com" class="contact-link">
+              <i class="fas fa-envelope"></i>
+              <span>kevmosqueda@hotmail.com</span>
+            </a>
+            <a href="https://www.linkedin.com/in/kevin-mosqueda/" target="_blank" class="contact-link">
+              <i class="fab fa-linkedin"></i>
+              <span>LinkedIn</span>
+            </a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- The Gateway Section -->
-      <section id="gateway" class="content-section hidden">
-        <h2>The Gateway // `//contact`</h2>
-        <div class="gateway-container">
-          <a href="mailto:kevmosqueda@hotmail.com" class="contact-link">
-            <i class="fas fa-envelope"></i>
-            <span>kevmosqueda@hotmail.com</span>
-          </a>
-          <a href="https://www.linkedin.com/in/kevin-mosqueda/" target="_blank" class="contact-link">
-            <i class="fab fa-linkedin"></i>
-            <span>LinkedIn</span>
-          </a>
-        </div>
-      </section>
-
-      <!-- The Playground Section -->
-      <section id="playground" class="content-section hidden">
-        <h2>The Playground // `//sandbox`</h2>
-        <div class="playground-container">
-          <div class="game-info">
-            <div>Score: <span id="score">0</span></div>
-            <div>High Score: <span id="highScore">0</span></div>
-          </div>
-          <canvas id="snakeCanvas"></canvas>
-          <div class="snake-controls">
-            <button id="snake-up"><i class="fas fa-arrow-up"></i></button>
-            <div class="snake-controls-row">
-              <button id="snake-left"><i class="fas fa-arrow-left"></i></button>
-              <button id="snake-down"><i class="fas fa-arrow-down"></i></button>
-              <button id="snake-right"><i class="fas fa-arrow-right"></i></button>
+        <!-- The Playground Section -->
+        <section id="playground" class="content-section hidden">
+          <h2>The Playground // `//sandbox`</h2>
+          <div class="playground-container">
+            <div class="game-info">
+              <div>Score: <span id="score">0</span></div>
+              <div>High Score: <span id="highScore">0</span></div>
+            </div>
+            <canvas id="snakeCanvas"></canvas>
+            <div class="snake-controls">
+              <button id="snake-up"><i class="fas fa-arrow-up"></i></button>
+              <div class="snake-controls-row">
+                <button id="snake-left"><i class="fas fa-arrow-left"></i></button>
+                <button id="snake-down"><i class="fas fa-arrow-down"></i></button>
+                <button id="snake-right"><i class="fas fa-arrow-right"></i></button>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       </section>
-    </main>
+      </main>
+    </div>
 
     <footer class="footer">
       &copy; 2025 Killionaire. All Rights Reserved.

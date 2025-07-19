@@ -32,6 +32,8 @@ function initializeAudio() {
     setupAudioControls(); // Setup controls after initialization
 }
 
+let isAnimatingVolume = false;
+
 function setupAudioControls() {
     const volumeSlider = document.getElementById('masterVolume');
     const muteButton = document.getElementById('muteButton');
@@ -39,7 +41,12 @@ function setupAudioControls() {
 
     let lastVolumeBeforeMute = targetVolumeDb;
 
+    const stopAnimation = () => {
+        isAnimatingVolume = false;
+    };
+
     volumeSlider.addEventListener('input', () => {
+        stopAnimation();
         const volumeValue = parseFloat(volumeSlider.value);
         masterVolume.volume.value = volumeValue;
         backgroundMusic.volume = Tone.dbToGain(volumeValue);
@@ -49,6 +56,7 @@ function setupAudioControls() {
     });
 
     muteButton.addEventListener('click', () => {
+        stopAnimation();
         const isMuted = muteButton.classList.toggle('muted');
         const muteIcon = muteButton.querySelector('i');
 
@@ -94,8 +102,11 @@ document.getElementById("startButton").addEventListener("click", async () => {
     const volumeSlider = document.getElementById('masterVolume');
     const duration = 1500;
     const startTime = performance.now();
+    isAnimatingVolume = true;
 
     function animateVolume(currentTime) {
+        if (!isAnimatingVolume) return;
+
         const elapsedTime = currentTime - startTime;
         const progress = Math.min(elapsedTime / duration, 1);
         const easedProgress = 1 - Math.pow(1 - progress, 3);
@@ -108,6 +119,8 @@ document.getElementById("startButton").addEventListener("click", async () => {
 
         if (progress < 1) {
             requestAnimationFrame(animateVolume);
+        } else {
+            isAnimatingVolume = false;
         }
     }
     requestAnimationFrame(animateVolume);

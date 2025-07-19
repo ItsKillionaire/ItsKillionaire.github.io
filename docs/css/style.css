@@ -20,19 +20,36 @@
 }
 
 /* Basic Reset & Body Styling */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling on the body */
+}
+
 body {
-margin: 0;
-padding: 0;
-font-family: "Fira Code", monospace;
-background-color: var(--color-bg-dark);
-color: var(--color-text-primary);
-overflow-x: hidden; /* Prevent horizontal scroll */
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-position: relative;
+    font-family: "Fira Code", monospace;
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content is removed to allow for vertical alignment adjustment */
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1200px; /* Max width for large screens */
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative; /* For footer positioning */
+    /* This moves the container up by 5% of the viewport height */
+    transform: translateY(-5vh);
 }
 
 /* Global Glow Effect */
@@ -235,27 +252,83 @@ animation: button-pop 0.2s ease-out forwards;
 
 /* Footer */
 .footer {
-position: absolute;
-bottom: 20px;
-width: 100%;
-text-align: center;
-font-size: 0.8em;
-color: var(--color-text-secondary);
-opacity: 0.7;
+    position: fixed; /* Keep footer at the bottom */
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    font-size: 0.8em;
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 100; /* Ensure it stays on top */
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-.hero-section {
-    padding: 30px 15px;
+    .main-container {
+        transform: translateY(0);
+        justify-content: flex-start;
+        padding-top: 5vh;
+    }
+
+    .hero-section {
+        padding: 20px 15px;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .nav-button {
+        width: 80%;
+        padding: 12px 25px;
+    }
+
+    .content-section {
+        width: 90%;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .footer {
+        position: relative; /* Change to relative for mobile */
+        bottom: auto;
+        left: auto;
+        transform: none;
+        margin-top: auto; /* Push to the bottom */
+        padding-bottom: 20px;
+    }
 }
-.nav-buttons {
-    flex-direction: column;
-    align-items: center;
-}
-.nav-button {
-    width: 80%;
-}
+
+@media (max-height: 600px) {
+    .main-container {
+        transform: translateY(0);
+        justify-content: flex-start;
+        padding-top: 2vh;
+    }
+
+    .site-title {
+        font-size: clamp(2em, 6vw, 4em);
+    }
+
+    .tagline {
+        font-size: clamp(0.9em, 2vw, 1.2em);
+        margin-bottom: 20px;
+    }
+
+    .nav-buttons {
+        gap: 10px;
+    }
+
+    .nav-button {
+        padding: 10px 20px;
+    }
 }
 
 /* Cursor Glow */
