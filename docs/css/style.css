@@ -329,6 +329,30 @@ animation: button-pop 0.2s ease-out forwards;
     .nav-button {
         padding: 10px 20px;
     }
+
+    /* Responsive Content Sections */
+    #terminal {
+        width: 90vw;
+        height: 60vh;
+        font-size: 0.9rem;
+    }
+
+    .github-card {
+        max-width: 90%;
+    }
+
+    .github-name {
+        font-size: 1.5em;
+    }
+
+    .github-bio {
+        font-size: 0.9em;
+    }
+
+    .contact-link {
+        font-size: 1em;
+        padding: 12px 20px;
+    }
 }
 
 /* Cursor Glow */
