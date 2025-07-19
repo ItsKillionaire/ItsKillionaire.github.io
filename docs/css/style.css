@@ -353,6 +353,20 @@ animation: button-pop 0.2s ease-out forwards;
         font-size: 1em;
         padding: 12px 20px;
     }
+
+    /* Responsive Terminal Prompt */
+    .prompt-line {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .prompt-user {
+        margin-bottom: 5px;
+    }
+
+    .terminal-input {
+        width: 100%;
+    }
 }
 
 /* Cursor Glow */
