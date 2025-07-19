@@ -1,266 +1,124 @@
 // --- Tone.js Audio Setup ---
-// Declare variables globally (without 'let' for re-assignment in initializeAudio)
 let masterVolume;
-let chorus;
-let reverb;
-// bgSynth and bgLoop are removed as background music is handled by HTML Audio
-let sfxSynth;
-let clickSynth;
-
-let isMuted = false;
-let audioInitialized = false; // Flag to ensure Tone.js audio components are initialized only once
-
-// HTML Audio element for background music (declared globally)
+let chorus, reverb, sfxSynth, clickSynth;
+let audioInitialized = false;
 let backgroundMusic;
 
+const initialVolumeDb = -60;
+const targetVolumeDb = -6;
+
 function initializeAudio() {
-    if (audioInitialized) {
-    console.log("Audio already initialized. Skipping re-initialization.");
-    return;
-    }
+    if (audioInitialized) return;
 
-    // --- Tone.js SFX Setup ---
-    // Master volume for Tone.js SFX
-    masterVolume = new Tone.Volume(-6).toDestination(); // Initial volume -6dB (~50%)
+    masterVolume = new Tone.Volume(initialVolumeDb).toDestination();
+    chorus = new Tone.Chorus(4, 2.5, 0.5).connect(masterVolume);
+    reverb = new Tone.Reverb({ decay: 5, predelay: 0.1, wet: 0.3 }).connect(chorus);
 
-    // Effects for Vaporwave Vibe (for SFX, not background music)
-    chorus = new Tone.Chorus(4, 2.5, 0.5).connect(masterVolume); // Wide, detuned sound
-    reverb = new Tone.Reverb({ decay: 5, predelay: 0.1, wet: 0.3 }).connect(
-    chorus,
-    ); // Ambient space
-
-    // SFX Synths (connected to masterVolume)
     sfxSynth = new Tone.PolySynth(Tone.Synth, {
-    oscillator: { type: "triangle" },
-    envelope: {
-        attack: 0.01,
-        decay: 0.1,
-        sustain: 0.0,
-        release: 0.1,
-    },
-    volume: -10,
+        oscillator: { type: "triangle" },
+        envelope: { attack: 0.01, decay: 0.1, sustain: 0.0, release: 0.1 },
+        volume: -10,
     }).connect(masterVolume);
 
     clickSynth = new Tone.MembraneSynth({
-    pitchDecay: 0.05,
-    octaves: 8,
-    envelope: {
-        attack: 0.001,
-        decay: 0.4,
-        sustain: 0.01,
-        release: 0.2,
-    },
-    volume: -15,
+        pitchDecay: 0.05,
+        octaves: 8,
+        envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 0.2 },
+        volume: -15,
     }).connect(masterVolume);
 
-    audioInitialized = true; // Set flag to true after initialization
+    audioInitialized = true;
     console.log("Tone.js audio components initialized.");
+    setupAudioControls(); // Setup controls after initialization
+}
+
+function setupAudioControls() {
+    const volumeSlider = document.getElementById('masterVolume');
+    const muteButton = document.getElementById('muteButton');
+    if (!volumeSlider || !muteButton) return;
+
+    let lastVolumeBeforeMute = targetVolumeDb;
+
+    volumeSlider.addEventListener('input', () => {
+        const volumeValue = parseFloat(volumeSlider.value);
+        masterVolume.volume.value = volumeValue;
+        backgroundMusic.volume = Tone.dbToGain(volumeValue);
+        lastVolumeBeforeMute = volumeValue;
+        muteButton.classList.remove('muted');
+        window.updateSliderVisuals(volumeValue);
+    });
+
+    muteButton.addEventListener('click', () => {
+        const isMuted = muteButton.classList.toggle('muted');
+        const muteIcon = muteButton.querySelector('i');
+
+        if (isMuted) {
+            lastVolumeBeforeMute = parseFloat(volumeSlider.value) > initialVolumeDb ? parseFloat(volumeSlider.value) : lastVolumeBeforeMute;
+            masterVolume.volume.value = -Infinity;
+            backgroundMusic.volume = 0;
+            volumeSlider.value = initialVolumeDb;
+        } else {
+            masterVolume.volume.value = lastVolumeBeforeMute;
+            backgroundMusic.volume = Tone.dbToGain(lastVolumeBeforeMute);
+            volumeSlider.value = lastVolumeBeforeMute;
+        }
+        window.updateSliderVisuals(parseFloat(volumeSlider.value));
+
+        muteIcon.classList.add('animated');
+        muteIcon.addEventListener('animationend', () => muteIcon.classList.remove('animated'), { once: true });
+    });
 }
 
 // --- HTML Audio Element for Background Music ---
-// Create the HTML Audio element here, but don't play it until user interaction
 backgroundMusic = document.createElement("audio");
 backgroundMusic.id = "backgroundMusic";
-backgroundMusic.src =
-    "https://github.com/ItsKillionaire/ItsKillionaire.github.io/raw/refs/heads/main/docs/assets/crystals_moon.mp3"; // VERIFIED PATH
+backgroundMusic.src = "https://github.com/ItsKillionaire/ItsKillionaire.github.io/raw/refs/heads/main/docs/assets/crystals_moon.mp3";
 backgroundMusic.loop = true;
-backgroundMusic.volume = 0.5; // 50% volume (0.0 to 1.0)
-backgroundMusic.preload = "auto"; // Preload for faster start
-document.body.appendChild(backgroundMusic); // Add to DOM
+backgroundMusic.volume = 0;
+backgroundMusic.preload = "auto";
+document.body.appendChild(backgroundMusic);
 
 // --- Event Listeners ---
-
-// Initial Interaction Overlay to start AudioContext and play background music
-document
-    .getElementById("startButton")
-    .addEventListener("click", async () => {
-    console.log("Start button clicked. Attempting to start audio...");
-
-    // Initialize Tone.js SFX components
-    initializeAudio();
-
-    // Start HTML Audio for background music
-    try {
-        await backgroundMusic.play();
-        console.log("Background music started.");
-    } catch (error) {
-        console.error("Failed to play background music:", error);
-        // Handle autoplay policy issues if needed
-    }
-
-    // Start Tone.js AudioContext for SFX if not running
+document.getElementById("startButton").addEventListener("click", async () => {
     if (Tone.context.state !== "running") {
         await Tone.start();
-        console.log("Tone.js AudioContext state:", Tone.context.state);
     }
-
+    initializeAudio();
+    try {
+        await backgroundMusic.play();
+    } catch (error) {
+        console.error("Background music playback failed:", error);
+    }
     document.getElementById("initialOverlay").classList.add("hidden");
-    // Update volume slider to reflect HTML audio volume
-    // Note: Tone.gainToDb(backgroundMusic.volume) converts 0-1 range to dB for slider
-    document.getElementById("masterVolume").value = Tone.gainToDb(
-        backgroundMusic.volume,
-    );
-    updateVolumeSlider();
-    console.log(
-        "Master volume slider value set to:",
-        document.getElementById("masterVolume").value,
-    );
-    });
 
-const volumeSlider = document.getElementById('masterVolume');
+    const volumeSlider = document.getElementById('masterVolume');
+    const duration = 1500;
+    const startTime = performance.now();
 
-function updateVolumeSlider() {
-    const value = (volumeSlider.value - volumeSlider.min) / (volumeSlider.max - volumeSlider.min) * 100;
-    volumeSlider.style.background = `linear-gradient(to right, var(--color-neon-blue) ${value}%, var(--color-bg-light) ${value}%)`;
-}
+    function animateVolume(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        const currentDb = initialVolumeDb + (targetVolumeDb - initialVolumeDb) * easedProgress;
 
-// Master Volume Control (now controls both Tone.js and HTML Audio)
-document.getElementById("masterVolume").addEventListener("input", (e) => {
-    // Check if masterVolume (Tone.js object) is initialized
-    if (!audioInitialized || !masterVolume) return;
+        masterVolume.volume.value = currentDb;
+        backgroundMusic.volume = Tone.dbToGain(currentDb);
+        volumeSlider.value = currentDb;
+        window.updateSliderVisuals(currentDb);
 
-    const volumeDb = parseFloat(e.target.value);
-    masterVolume.volume.value = volumeDb; // Controls Tone.js SFX
-    backgroundMusic.volume = Tone.dbToGain(volumeDb); // Controls HTML Audio
-    updateVolumeSlider();
-
-    console.log(
-    "Volume slider changed to:",
-    volumeDb,
-    "dB. HTML Audio volume:",
-    backgroundMusic.volume,
-    );
-
-    if (isMuted && volumeDb > -60) {
-    isMuted = false;
-    document.getElementById("muteButton").textContent = "Mute";
+        if (progress < 1) {
+            requestAnimationFrame(animateVolume);
+        }
     }
-});
-
-// Mute/Unmute Button (now controls both Tone.js and HTML Audio)
-document.getElementById("muteButton").addEventListener("click", () => {
-    // Check if masterVolume (Tone.js object) is initialized
-    if (!audioInitialized || !masterVolume) return;
-
-    if (isMuted) {
-    const currentSliderValue = parseFloat(
-        document.getElementById("masterVolume").value,
-    );
-    masterVolume.volume.value = currentSliderValue; // Unmute Tone.js
-    backgroundMusic.volume = Tone.dbToGain(currentSliderValue); // Unmute HTML Audio
-    document.getElementById("muteButton").textContent = "Mute";
-    console.log(
-        "Unmuted. Volume:",
-        currentSliderValue,
-        "dB. HTML Audio volume:",
-        backgroundMusic.volume,
-    );
-    // Ensure Tone.js Transport is started if it was stopped
-    if (Tone.Transport.state !== "started") {
-        Tone.Transport.start();
-    }
-    if (backgroundMusic.paused) {
-        // Resume HTML audio if paused
-        backgroundMusic.play();
-    }
-    } else {
-    masterVolume.volume.value = -Infinity; // Mute Tone.js
-    backgroundMusic.volume = 0; // Mute HTML Audio
-    document.getElementById("muteButton").textContent = "Unmute";
-    console.log("Muted.");
-    // Stop Tone.js Transport when muted to prevent "start time" errors if trying to restart
-    if (Tone.Transport.state === "started") {
-        Tone.Transport.stop();
-    }
-    if (!backgroundMusic.paused) {
-        // Pause HTML audio if playing
-        backgroundMusic.pause();
-    }
-    }
-    isMuted = !isMuted;
+    requestAnimationFrame(animateVolume);
 });
 
 // Button Hover SFX
 document.querySelectorAll(".nav-button").forEach((button) => {
     button.addEventListener("mouseenter", () => {
-    if (!audioInitialized) return;
-    sfxSynth.triggerAttackRelease("C5", "16n");
-    });
-    button.addEventListener("mouseleave", () => {
-    // Optional: subtle sound on mouse leave
-    });
-    // Add click effect
-    button.addEventListener("click", (e) => {
-        e.preventDefault();
         if (!audioInitialized) return;
-        button.classList.add("clicked");
-        clickSynth.triggerAttackRelease("C4", "32n"); // Play click SFX on button click
-        button.addEventListener(
-            "animationend",
-            () => {
-            button.classList.remove("clicked");
-            },
-            { once: true },
-        );
-        const targetId = button.getAttribute("href").substring(1);
-        showContent(targetId);
+        sfxSynth.triggerAttackRelease("C5", "16n");
     });
-});
-
-// General Click SFX (matching cursor trail)
-document.body.addEventListener("click", (e) => {
-    if (!audioInitialized) return;
-    // Check if the click was on a nav button (or a child of one)
-    let isNavButton = false;
-    let targetElement = e.target;
-    while (targetElement != null) {
-    if (
-        targetElement.classList &&
-        targetElement.classList.contains("nav-button")
-    ) {
-        isNavButton = true;
-        break;
-    }
-    targetElement = targetElement.parentElement;
-    }
-
-    // Only play general click SFX if not on a nav button
-    if (!isNavButton) {
-    clickSynth.triggerAttackRelease("C4", "32n"); // A subtle pop sound
-    }
-});
-
-// Cursor Glow Effect (from previous version)
-document.addEventListener("mousemove", function (e) {
-    const cursorGlow = document.createElement("div");
-    cursorGlow.className = "cursor-glow";
-    document.body.appendChild(cursorGlow);
-
-    cursorGlow.style.left = e.clientX + "px";
-    cursorGlow.style.top = e.clientY + "px";
-
-    cursorGlow.style.setProperty(
-    "--glow-color",
-    `var(--color-neon-${["purple", "blue", "pink", "green", "yellow"][Math.floor(Math.random() * 5)]})`,
-    );
-
-    setTimeout(() => {
-    cursorGlow.remove();
-    }, 500);
-});
-
-// Ensure audio context is resumed on any interaction if suspended (mobile browsers)
-document.body.addEventListener("touchstart", async () => {
-    if (!audioInitialized) initializeAudio(); // Initialize if not already
-    if (Tone.context.state !== "running") await Tone.start();
-    if (backgroundMusic.paused) backgroundMusic.play(); // Play HTML audio
-    // Tone.Transport is handled by mute/unmute, no need to force start here
-});
-document.body.addEventListener("mousedown", async () => {
-    if (!audioInitialized) initializeAudio(); // Initialize if not already
-    if (Tone.context.state !== "running") await Tone.start();
-    if (backgroundMusic.paused) backgroundMusic.play(); // Play HTML audio
-    // Tone.Transport is handled by mute/unmute, no need to force start here
 });
 
 // New: System Status Update (Mock Data)

@@ -49,6 +49,22 @@
           ><span>The Playground // `//sandbox`</span></a
         >
       </nav>
+
+      <!-- Audio Control UI -->
+      <div class="audio-control">
+        <button id="muteButton"><i class="fas fa-volume-high"></i></button>
+        <div class="volume-slider-container">
+          <div class="volume-slider-track"></div>
+          <input
+            type="range"
+            id="masterVolume"
+            min="-60"
+            max="0"
+            value="-6"
+            step="1"
+          />
+        </div>
+      </div>
     </header>
 
     <main class="content-sections">
@@ -128,20 +144,7 @@
       <!-- New system status -->
     </footer>
 
-    <!-- Audio Control UI -->
-    <div class="audio-control">
-      <label for="masterVolume">Volume:</label>
-      <input
-        type="range"
-        id="masterVolume"
-        min="-60"
-        max="0"
-        value="-6"
-        step="1"
-      />
-      <!-- Default to ~50% volume (-6dB) -->
-      <button id="muteButton">Mute</button>
-    </div>
+    
 
     <script src="js/main.js"></script>
     <script src="js/ui.js"></script>
