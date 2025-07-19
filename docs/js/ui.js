@@ -101,7 +101,8 @@ window.updateSliderVisuals = (value) => {
 };
 
 // Set initial visual state of the slider on load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+    goHome();
     const volumeSlider = document.getElementById('masterVolume');
     if(volumeSlider) {
         volumeSlider.value = -60;

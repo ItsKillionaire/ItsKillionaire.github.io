@@ -604,7 +604,7 @@ opacity: 0.1; /* Subtle */
 }
 
 .hidden {
-    display: none;
+    display: none !important; /* Ensure this always hides the element */
 }
 
 .content-section {
@@ -620,20 +620,20 @@ opacity: 0.1; /* Subtle */
 
 /* --- Terminal Section Styles --- */
 #terminal {
-    background-color: rgba(20, 22, 24, 0.85); /* Dark, semi-transparent background */
+    background-color: rgba(20, 22, 24, 0.85);
     backdrop-filter: blur(10px);
     border: 1px solid var(--color-neon-blue);
     color: var(--color-text-primary);
-    font-family: 'Fira Code', 'Ubuntu Mono', monospace;
+    font-family: "Fira Code", "Ubuntu Mono", monospace;
     font-size: 1rem;
     padding: 1rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     width: 70vw;
-    height: 70vh;
+    height: 50vh;
     max-width: 1200px;
-    /* display: flex; <-- This is removed to allow the .hidden class to work */
+    display: flex; /* Use flexbox */
     flex-direction: column;
-    border-radius: 8px; /* Added for consistency */
+    border-radius: 8px;
 }
 
 #terminal.visible {
@@ -642,27 +642,27 @@ opacity: 0.1; /* Subtle */
 
 #terminalBody {
     flex-grow: 1;
-    overflow-y: auto;
-    padding-right: 10px; /* For scrollbar */
+    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding-right: 10px;
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 
 #terminalOutput .command-output {
     margin-bottom: 1rem;
 }
 
-#terminalOutput .prompt-line {
+.terminal-input-line {
     display: flex;
     align-items: center;
-}
-
-.prompt-line {
-    display: flex;
-    align-items: center;
+    flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 .prompt-user {
-    color: #4AF626; /* Classic green */
+    color: #4AF626;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .prompt-symbol {
@@ -678,6 +678,7 @@ opacity: 0.1; /* Subtle */
     font-size: inherit;
     flex-grow: 1;
     outline: none;
+    min-width: 0; /* Allow input to shrink */
 }
 
 /* Scrollbar for terminal */
