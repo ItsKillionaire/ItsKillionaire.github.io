@@ -100,11 +100,19 @@ document
     document.getElementById("masterVolume").value = Tone.gainToDb(
         backgroundMusic.volume,
     );
+    updateVolumeSlider();
     console.log(
         "Master volume slider value set to:",
         document.getElementById("masterVolume").value,
     );
     });
+
+const volumeSlider = document.getElementById('masterVolume');
+
+function updateVolumeSlider() {
+    const value = (volumeSlider.value - volumeSlider.min) / (volumeSlider.max - volumeSlider.min) * 100;
+    volumeSlider.style.background = `linear-gradient(to right, var(--color-neon-blue) ${value}%, var(--color-bg-light) ${value}%)`;
+}
 
 // Master Volume Control (now controls both Tone.js and HTML Audio)
 document.getElementById("masterVolume").addEventListener("input", (e) => {
@@ -114,6 +122,7 @@ document.getElementById("masterVolume").addEventListener("input", (e) => {
     const volumeDb = parseFloat(e.target.value);
     masterVolume.volume.value = volumeDb; // Controls Tone.js SFX
     backgroundMusic.volume = Tone.dbToGain(volumeDb); // Controls HTML Audio
+    updateVolumeSlider();
 
     console.log(
     "Volume slider changed to:",
